@@ -1,0 +1,69 @@
+# General common topics
+- ros_topic_name: "/x500/odometry"
+  gz_topic_name: "/x500/odometry"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "gz.msgs.Odometry"
+  direction: BIDIRECTIONAL
+
+- ros_topic_name: "/x500/command/twist"
+  gz_topic_name: "/x500/command/twist"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "gz.msgs.Twist"
+  direction: BIDIRECTIONAL
+
+- ros_topic_name: "/x500/enabled_motors"
+  gz_topic_name: "/x500/enabled_motors"
+  ros_type_name: "std_msgs/msg/Bool"
+  gz_type_name: "gz.msgs.Boolean"
+  direction: BIDIRECTIONAL
+
+# Camera sensors
+- ros_topic_name: "/x500/camera"
+  gz_topic_name: "/x500/camera"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: BIDIRECTIONAL
+
+- ros_topic_name: "/x500/gimbal_camera"
+  gz_topic_name: "/x500/gimbal_camera"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: BIDIRECTIONAL
+
+- ros_topic_name: "/x500/gimbal_segmentation_camera/colored_map"
+  gz_topic_name: "/x500/gimbal_segmentation_camera/colored_map"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: BIDIRECTIONAL
+
+- ros_topic_name: "/x500/depth_camera"
+  gz_topic_name: "/x500/depth_camera"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: BIDIRECTIONAL
+
+# Lidar sensors
+- ros_topic_name: "/x500/scan/1D/down"
+  gz_topic_name: "/x500/scan/1D/down"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "gz.msgs.LaserScan"
+  direction: BIDIRECTIONAL
+
+- ros_topic_name: "/x500/scan/1D/front"
+  gz_topic_name: "/x500/scan/1D/front"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "gz.msgs.LaserScan"
+  direction: BIDIRECTIONAL
+
+- ros_topic_name: "/x500/scan/2d"
+  gz_topic_name: "/x500/scan/2d"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "gz.msgs.LaserScan"
+  direction: BIDIRECTIONAL
+
+# Gimbal controls
+- ros_topic_name: "/x500/gimbal_control"
+  gz_topic_name: "/x500/gimbal_control"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: BIDIRECTIONAL
