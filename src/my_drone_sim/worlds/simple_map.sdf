@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <sdf version='1.10'>
   <world name='cranavgym_drone_sim'>
-    <physics name='5ms' type='ignored'>
-      <max_step_size>0.0060000000000000001</max_step_size>
+    <physics type='ode'>
+      <max_step_size>0.005</max_step_size>
       <real_time_factor>0</real_time_factor>
     </physics>
     <plugin name='gz::sim::systems::Physics' filename='gz-sim-physics-system'/>
@@ -12,18 +12,55 @@
       <render_engine>ogre2</render_engine>
     </plugin>
     <gravity>0 0 -9.8000000000000007</gravity>
-    <magnetic_field>5.5644999999999998e-06 2.2875799999999999e-05 -4.2388400000000002e-05</magnetic_field>
-    <atmosphere type='adiabatic'/>
-    <scene>
-      <ambient>0.400000006 0.400000006 0.400000006 1</ambient>
-      <background>0.699999988 0.699999988 0.699999988 1</background>
-      <shadows>false</shadows>
-    </scene>
-    <include>
-      <uri>file:///home/paris/cranfield-ros2-drone-ws/src/my_drone_sim/models/flight_arena</uri>
-      <name>flight_arena</name>
+    <model name='ground_plane'>
+      <static>true</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.800000012 0.800000012 0.800000012 1</ambient>
+            <diffuse>0.800000012 0.800000012 0.800000012 1</diffuse>
+            <specular>0.800000012 0.800000012 0.800000012 1</specular>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>1</mass>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+        </inertial>
+        <enable_wind>false</enable_wind>
+      </link>
       <pose>0 0 0 0 0 0</pose>
-    </include>
+      <self_collide>false</self_collide>
+    </model>
     <include>
       <uri>file:///home/paris/cranfield-ros2-drone-ws/install/my_drone_sim/share/my_drone_sim/models/x500_gimbal</uri>
       <name>x500</name>
@@ -32,30 +69,33 @@
     <include>
       <uri>file:///home/paris/cranfield-ros2-drone-ws/src/my_drone_sim/models/goal</uri>
       <name>goal</name>
-      <pose>9.392970085144043 2.6092100143432617 1.9244006872177124 0 0 0</pose>
+      <pose>10 0 0.5 0 0 0</pose>
     </include>
     <include>
       <uri>file:///home/paris/cranfield-ros2-drone-ws/src/my_drone_sim/models/red_box</uri>
       <name>red_box</name>
-      <pose>3.7851901054382515 5.0201802253722274 1.0999990992111006 -1.5236740656852524e-16 -4.641351546156203e-17 2.9599521786766593e-16</pose>
+      <pose>3 5 1 0 0 0</pose>
+      <static>true</static>
     </include>
     <include>
       <uri>file:///home/paris/cranfield-ros2-drone-ws/src/my_drone_sim/models/green_box</uri>
       <name>green_box</name>
-      <pose>4.5066299438476376 -2.3598799705505371 1.0999990996104259 -1.5538416812161362e-18 7.2210260754845823e-17 7.6527475355034437e-16</pose>
+      <pose>5 -5 1 0 0 0</pose>
+      <static>true</static>
     </include>
+
     <light name='sun' type='directional'>
-      <pose>0 0 1000 0 0 0</pose>
+      <pose>0 0 100 0 0 0</pose>
       <cast_shadows>true</cast_shadows>
       <intensity>1</intensity>
       <direction>-0.5 0.10000000000000001 -0.90000000000000002</direction>
       <diffuse>0.800000012 0.800000012 0.800000012 1</diffuse>
       <specular>0.200000003 0.200000003 0.200000003 1</specular>
       <attenuation>
-        <range>1005</range>
-        <linear>0.0099999997764825821</linear>
-        <constant>0.89999997615814209</constant>
-        <quadratic>0.0010000000474974513</quadratic>
+        <range>105</range>
+        <linear>0.01</linear>
+        <constant>0.90000000000000002</constant>
+        <quadratic>0.001</quadratic>
       </attenuation>
       <spot>
         <inner_angle>0</inner_angle>

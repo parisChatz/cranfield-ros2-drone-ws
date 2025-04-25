@@ -65,7 +65,7 @@ def generate_launch_description():
     world_file = os.path.join(
         get_package_share_directory("my_drone_sim"),
         "worlds",
-        "flight_arena_objects.sdf",
+        "simple_map.sdf",
     )
 
     gz_headless = ExecuteProcess(
