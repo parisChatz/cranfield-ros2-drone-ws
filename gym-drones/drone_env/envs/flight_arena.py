@@ -5,16 +5,15 @@ from gz.transport14 import Node
 from gz.msgs11.image_pb2 import Image
 from gz.msgs11.twist_pb2 import Twist
 import time
+import sys
 
 # Reset shit
-from gz.transport14 import Node
 from gz.msgs11.pose_pb2 import Pose
 from gz.msgs11.boolean_pb2 import Boolean
 import math
 import time
 import subprocess
 from gz.msgs11.world_control_pb2 import WorldControl
-from gz.msgs11.boolean_pb2 import Boolean
 
 
 class DroneEnv(gym.Env):
@@ -26,7 +25,7 @@ class DroneEnv(gym.Env):
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 30}
 
-    def __init__(self, render_mode=None, max_episode_steps=50):
+    def __init__(self, render_mode=None, max_episode_steps=500):
         super().__init__()
 
         # 1. Create a Gazebo transport node (no rclpy or ROS2)
@@ -66,122 +65,6 @@ class DroneEnv(gym.Env):
         # 5. Render mode handling (if you want to do live visualization)
         self.render_mode = render_mode
 
-        # 1) Make your transport node once, then reuse it
-        self.node = Node()
-
-    def world_reset(self, world_name: str = "cranavgym_drone_sim"):
-
-        # 1) Build your request
-        req = WorldControl()
-        req.reset.all = True
-
-        # 2) Call `request`, passing:
-        #    - topic
-        #    - your WorldControl request msg
-        #    - the WorldControl class as `request_type`
-        #    - the Boolean class     as `response_type`
-        #    - timeout in ms (e.g. 2000)
-        result, response = self.node.request(
-            f"/world/{world_name}/control", req, WorldControl, Boolean, 100000
-        )
-
-        # 3) Check success and handle the Boolean reply
-        if not result:
-            raise RuntimeError("[ERROR] World reset request timed out")
-        if not response.data:
-            raise RuntimeError("[ERROR] World reset failed on the server side")
-        print("[INFO] World reset successfully")
-
-    def world_reset2(self):
-        self.move_model()
-
-    def move_model(self):
-        cmd = [
-            "gz",
-            "service",
-            "-s",
-            "/world/cranavgym_drone_sim/set_pose",
-            "--reqtype",
-            "gz.msgs.Pose",
-            "--resptype",
-            "gz.msgs.Boolean",
-            "--timeout",
-            "1000",
-            "--req",
-            'name: "{name}", position: {{x: {x}, y: {y}, z: {z}}}'.format(
-                name="x500", x=0.0, y=0.0, z=0.1
-            ),
-        ]
-        subprocess.run(cmd)
-
-    def move_model2(
-        self,
-        model_name: str,
-        x: float,
-        y: float,
-        z: float,
-        roll: float = 0.0,
-        pitch: float = 0.0,
-        yaw: float = 0.0,
-        world_name: str = "cranavgym_drone_sim",
-        timeout_ms: int = 5000,
-    ):
-        """
-        Teleport `model_name` to the given pose in Gazebo/Harmonic.
-        Rolls, pitches and yaws are in radians.
-
-        Raises RuntimeError on timeout or server-side failure.
-        """
-
-        # give the discovery handshake a moment
-
-        # 2) Build the Pose request
-        req = Pose()
-        req.name = model_name
-        req.position.x = x
-        req.position.y = y
-        req.position.z = z
-
-        # simple RPY→quaternion conversion
-        qx = math.sin(roll / 2) * math.cos(pitch / 2) * math.cos(yaw / 2) - math.cos(
-            roll / 2
-        ) * math.sin(pitch / 2) * math.sin(yaw / 2)
-        qy = math.cos(roll / 2) * math.sin(pitch / 2) * math.cos(yaw / 2) + math.sin(
-            roll / 2
-        ) * math.cos(pitch / 2) * math.sin(yaw / 2)
-        qz = math.cos(roll / 2) * math.cos(pitch / 2) * math.sin(yaw / 2) - math.sin(
-            roll / 2
-        ) * math.sin(pitch / 2) * math.cos(yaw / 2)
-        qw = math.cos(roll / 2) * math.cos(pitch / 2) * math.cos(yaw / 2) + math.sin(
-            roll / 2
-        ) * math.sin(pitch / 2) * math.sin(yaw / 2)
-
-        req.orientation.x = qx
-        req.orientation.y = qy
-        req.orientation.z = qz
-        req.orientation.w = qw
-
-        # 3) Call the `/world/<world>/set_pose` service
-        # note: Ignition CLI uses exactly this path :contentReference[oaicite:0]{index=0}
-        result, response = self.node.request(
-            f"/world/{world_name}/set_pose",
-            req,
-            Pose,  # request message type
-            Boolean,  # response message type
-            timeout_ms,
-        )
-
-        # 4) Check for errors
-        if not result:
-            raise RuntimeError("[ERROR] move_model request timed out")
-        if not response.data:
-            raise RuntimeError("[ERROR] move_model failed on the server side")
-
-        print(
-            f"[INFO] {model_name} moved to "
-            f"({x:.2f}, {y:.2f}, {z:.2f}, r={roll:.2f}, p={pitch:.2f}, y={yaw:.2f})"
-        )
-
     def _camera_callback(self, msg: Image):
         self.latest_image = msg.data
 
@@ -212,7 +95,7 @@ class DroneEnv(gym.Env):
         Reset the environment at the start of an episode.
         Return (observation, info).
         """
-        # super().reset(seed=seed)
+        super().reset(seed=seed)
         self.world_reset()
         self.step_count = 0
 
@@ -255,24 +138,58 @@ class DroneEnv(gym.Env):
                 f"terminated: {terminated}, truncated: {truncated}, reward: {reward}, step: {self.step_count}"
             )
         info = {}
-        self.render()
+        # self.render()
         return obs, reward, terminated, truncated, info
 
     def render(self):
-        if self.render_mode == "human" and self.latest_obs is not None:
-            cv2.imshow("Drone Camera View", self.latest_obs)
-            cv2.waitKey(1)
-        elif self.render_mode == "rgb_array":
-            return (
-                self.latest_image
-                if self.latest_image is not None
-                else np.zeros((160, 160, 3), dtype=np.uint8)
-            )
+        pass
+        # if self.render_mode == "human" and self.latest_obs is not None:
+        #     cv2.imshow("Drone Camera View", self.latest_obs)
+        #     cv2.waitKey(1)
+        # elif self.render_mode == "rgb_array":
+        #     return (
+        #         self.latest_image
+        #         if self.latest_image is not None
+        #         else np.zeros((160, 160, 3), dtype=np.uint8)
+        #     )
 
     def close(self):
         """
         Clean up the ROS2 node and any other resources.
         """
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
         self.gz_node.shutdown()
         super().close()
+
+    # --------------------------------------------------
+    # HELPER FUNCTIONS
+    # --------------------------------------------------
+    def world_reset(self, world_name="cranavgym_drone_sim"):
+        cmd = [
+            sys.executable,
+            "drone_env/envs/utils/world_control_helper.py",
+            "--world",
+            world_name,
+            "--reset",
+        ]
+        subprocess.run(cmd, check=True)
+
+    def pause_world(self, world_name="cranavgym_drone_sim"):
+        cmd = [
+            sys.executable,  # path to the same Python interpreter
+            "drone_env/envs/utils/world_control_helper.py",
+            "--world",
+            world_name,
+            "--pause",
+        ]
+        subprocess.run(cmd, check=True)
+
+    def unpause_world(self, world_name="cranavgym_drone_sim"):
+        cmd = [
+            sys.executable,
+            "drone_env/envs/utils/world_control_helper.py",
+            "--world",
+            world_name,
+            "--unpause",
+        ]
+        subprocess.run(cmd, check=True)

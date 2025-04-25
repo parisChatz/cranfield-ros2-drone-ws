@@ -13,46 +13,7 @@ import random
 __all__ = ["world_reset", "spawn_entity", "launch_sim"]
 
 _node = Node()
-
-
-SDF = "/home/paris/cranfield-ros2-drone-ws/src/my_drone_sim/worlds/drone_scenario2.sdf"
-
-
-def launch_sim(
-    *, seed: float = 0, paused: bool = True, simulation_map: str, gui: bool = False
-):
-    cmd = ["gz", "sim", simulation_map]
-    if not paused:
-        cmd += ["-r"]
-    if not gui:
-        cmd += ["--headless-rendering"]
-    cmd += [f"--seed={seed}"]
-    print("[INFO] Simulation ready.")
-    return subprocess.Popen(cmd, preexec_fn=os.setsid)
-
-
-def world_reset(world_name: str = "cranavgym_drone_sim"):
-    # TODO REMEMBER TO RENAME THE SDF MAP NAME!!!
-    # 1) Build your request
-    req = WorldControl()
-    req.reset.all = True
-
-    # 2) Call `request`, passing:
-    #    - topic
-    #    - your WorldControl request msg
-    #    - the WorldControl class as `request_type`
-    #    - the Boolean class     as `response_type`
-    #    - timeout in ms (e.g. 2000)
-    result, response = Node().request(
-        f"/world/{world_name}/control", req, WorldControl, Boolean, 2000
-    )
-
-    # 3) Check success and handle the Boolean reply
-    if not result:
-        raise RuntimeError("[ERROR] World reset request timed out")
-    if not response.data:
-        raise RuntimeError("[ERROR] World reset failed on the server side")
-    print("[INFO] World reset successfully")
+# TODO wrong way to handle nodes. Try subprocesses.
 
 
 def spawn_entity(
@@ -119,72 +80,30 @@ def spawn_many_agents():
 
 
 if __name__ == "__main__":
-    # launch_sim(simulation_map=SDF)
-    world_reset()
-    # time.sleep(2.0)
 
-    # spawn_entity(ep(2.0)
+    time.sleep(2.0)
+    spawn_entity(
+        model_uri="model://goal",
+        name="goal26",
+        x=5,
+        y=0,
+        z=0.0,
+    )
+    time.sleep(2.0)
+    spawn_entity(
+        model_uri="model://red_box",
+        name="goal3",
+        x=5,
+        y=5,
+        z=0.0,
+    )
+    time.sleep(2.0)
+    spawn_entity(
+        model_uri="model://green_box",
+        name="goal4",
+        x=0,
+        y=5,
+        z=0.0,
+    )
 
-    # spawn_entity(
-    #     model_uri="model://x500_gimbal",
-    #     name="x50023212",
-    #     x=random.uniform(-1, 1),
-    #     y=random.uniform(-1, 1),
-    #     z=0.0,
-    # )\\
-    # time.sleep(2.0)
-    # spawn_entity(
-    #     model_uri="model://goal",
-    #     name="goal26",
-    #     x=5,
-    #     y=0,
-    #     z=0.0,
-    # )
-    # time.sleep(2.0)
-    # spawn_entity(
-    #     model_uri="model://red_box",
-    #     name="goal3",
-    #     x=5,
-    #     y=5,
-    #     z=0.0,
-    # )
-    # time.sleep(2.0)
-    # spawn_entity(
-    #     model_uri="model://green_box",
-    #     name="goal4",
-    #     x=0,
-    #     y=5,
-    #     z=0.0,
-    # )model://x500_gimbal",
-    #     name="x50023212",
-    #     x=random.uniform(-1, 1),
-    #     y=random.uniform(-1, 1),
-    #     z=0.0,
-    # )
-    # time.sleep(2.0)
-    # spawn_entity(
-    #     model_uri="model://goal",
-    #     name="goal26",
-    #     x=5,
-    #     y=0,
-    #     z=0.0,
-    # )
-    # time.sleep(2.0)
-    # spawn_entity(
-    #     model_uri="model://red_box",
-    #     name="goal3",
-    #     x=5,
-    #     y=5,
-    #     z=0.0,
-    # )
-    # time.sleep(2.0)
-    # spawn_entity(
-    #     model_uri="model://green_box",
-    #     name="goal4",
-    #     x=0,
-    #     y=5,
-    #     z=0.0,
-    # )
-
-    # world_reset()
-    # time.sleep(1.0)
+    time.sleep(1.0)
