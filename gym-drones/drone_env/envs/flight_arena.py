@@ -4,22 +4,14 @@ import cv2
 from gz.transport14 import Node
 from gz.msgs11.image_pb2 import Image
 from gz.msgs11.twist_pb2 import Twist
-import time
 import sys
-
-# Reset shit
-from gz.msgs11.pose_pb2 import Pose
-from gz.msgs11.boolean_pb2 import Boolean
-import math
-import time
 import subprocess
-from gz.msgs11.world_control_pb2 import WorldControl
 
 
 class DroneEnv(gym.Env):
     """
-    Gymnasium environment for controlling a drone in Gazebo via ROS2.
-    Observations: camera frames or other sensor data.
+    Gymnasium environment for controlling a drone in Gazebo.
+    Observations: camera frames.
     Actions: velocity commands (Twist).
     """
 
@@ -28,18 +20,18 @@ class DroneEnv(gym.Env):
     def __init__(self, render_mode=None, max_episode_steps=500):
         super().__init__()
 
-        # 1. Create a Gazebo transport node (no rclpy or ROS2)
+        # 1. Create a Gazebo transport node
         self.gz_node = Node()
 
-        # 2. Create a publisher for velocity commands
+        # 2. Create publishers and subscribers
         self.cmd_pub = self.gz_node.advertise(
-            topic="/x500/command/twist", msg_type=Twist  # The Gazebo twist topic
+            topic="/x500/command/twist", msg_type=Twist
         )
 
         self.image_sub = self.gz_node.subscribe(
-            topic="/x500/camera",  # The Gazebo camera topic
-            callback=self._camera_callback,  # Your callback
-            msg_type=Image,  # The Gazebo image message type
+            topic="/x500/camera",
+            callback=self._camera_callback,
+            msg_type=Image,
         )
 
         # 3. Gymnasium spaces:
@@ -48,7 +40,7 @@ class DroneEnv(gym.Env):
             low=0, high=255, shape=(160, 160, 3), dtype=np.uint8
         )
 
-        # Action space (example: [vx, vy, vz, yaw_rate], each in [-1, 1])
+        # Action space
         self.action_space = gym.spaces.Box(
             low=-1.0,
             high=1.0,
@@ -83,11 +75,16 @@ class DroneEnv(gym.Env):
         self.latest_obs = img_bgr
         return self.latest_obs
 
-    def _calculate_reward(self, obs):
+    def _calculate_reward(self):
         """
         Compute the reward based on the current state (obs).
         This is entirely dependent on your task (hover, navigate, etc.).
         """
+
+        # Get distance between agent and goal
+        # if < 0.5, return 1.0
+        # else > 0.5, return 0.01
+
         return 0.0
 
     def reset(self, seed=None, options=None):
@@ -101,7 +98,6 @@ class DroneEnv(gym.Env):
 
         # Possibly reset the simulation or drone pose in Gazebo
         # e.g., call a service to reset the world or reposition the drone
-
         obs = self._get_observation()
         info = {}
         return obs, info
@@ -122,17 +118,23 @@ class DroneEnv(gym.Env):
         twist_msg.angular.z = float(action[3])
         self.cmd_pub.publish(twist_msg)
 
-        obs = self._get_observation()
-        reward = self._calculate_reward(obs)
+        obs = self._get_observation()  # TODO Normalise observations
+        reward = self._calculate_reward()
 
         # 5. Determine if episode is terminated or truncated
         # For example, if the drone “crashed” or “landed,” set terminated = True
-        collision = False
-        if collision:
-            pass
 
         # If we hit a max step limit, set truncated = True
         truncated = self.step_count >= self.max_episode_steps
+
+        # TODO: Check if the drone is still flying or has crashed
+        # collision = self._check_if_crashed()
+        # goal_reached = self._check_if_goal_reached()
+
+        goal_reached = False  # Placeholder for actual goal detection logic
+        collision = False  # Placeholder for actual collision detection logic
+        terminated = collision or goal_reached
+
         if terminated or truncated:
             print(
                 f"terminated: {terminated}, truncated: {truncated}, reward: {reward}, step: {self.step_count}"
