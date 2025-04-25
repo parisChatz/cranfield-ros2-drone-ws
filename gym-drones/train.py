@@ -79,6 +79,24 @@ def launch_ros2_sim(headless_sim: bool = True, model_name: str = "x500_mono_cam"
     return subprocess.Popen(cmd, env=sim_env)
 
 
+def launch_gazebo_sim(
+    sdf_path: str = "/home/paris/cranfield-ros2-drone-ws/src/my_drone_sim/worlds/flight_arena_objects.sdf",
+    seed: int = 0,
+) -> None:
+    """
+    Launches Ignition Gazebo (gz) simulation on the given SDF world file
+    with the specified random seed.
+
+    :param sdf_path: Path to your .sdf world file
+    :param seed:     RNG seed for reproducibility
+    :raises CalledProcessError: if gz exits with a non-zero status
+    """
+    cmd = ["gz", "sim", "--seed", str(seed), sdf_path]
+    print(f"[INFO] Running: {' '.join(cmd)}")
+    # This will block until the sim process exits
+    subprocess.run(cmd, check=True)
+
+
 def kill_process_tree(pid, sig=signal.SIGTERM, timeout=5.0):
     """
     Terminate all children of the given PID, then the PID itself.
@@ -120,8 +138,8 @@ def main():
     exit_code = 0
     try:
         # 1) start the sim as its own process
-        sim_proc = launch_ros2_sim(HEADLESS_SIM, MODEL_NAME)
-
+        # sim_proc = launch_ros2_sim(HEADLESS_SIM, MODEL_NAME)
+        launch_gazebo_sim()
         # 2) wait for /clock
         wait_for_clock(min_msgs=10, timeout=30.0)
         print("[INFO] Simulation is ready - starting RL training")
