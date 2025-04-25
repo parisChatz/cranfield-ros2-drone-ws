@@ -13,34 +13,8 @@ from gz.msgs11.boolean_pb2 import Boolean
 import math
 import time
 import subprocess
-
-
-def world_reset2(world_name: str = "cranavgym_drone_sim"):
-    from gz.msgs11.world_control_pb2 import WorldControl
-    from gz.msgs11.boolean_pb2 import Boolean
-
-    reset_node = Node()
-
-    # 1) Build your request
-    req = WorldControl()
-    req.reset.all = True
-
-    # 2) Call `request`, passing:
-    #    - topic
-    #    - your WorldControl request msg
-    #    - the WorldControl class as `request_type`
-    #    - the Boolean class     as `response_type`
-    #    - timeout in ms (e.g. 2000)
-    result, response = reset_node.request(
-        f"/world/{world_name}/control", req, WorldControl, Boolean, 100000
-    )
-
-    # 3) Check success and handle the Boolean reply
-    if not result:
-        raise RuntimeError("[ERROR] World reset request timed out")
-    if not response.data:
-        raise RuntimeError("[ERROR] World reset failed on the server side")
-    print("[INFO] World reset successfully")
+from gz.msgs11.world_control_pb2 import WorldControl
+from gz.msgs11.boolean_pb2 import Boolean
 
 
 class DroneEnv(gym.Env):
@@ -95,7 +69,30 @@ class DroneEnv(gym.Env):
         # 1) Make your transport node once, then reuse it
         self.node = Node()
 
-    def world_reset(self):
+    def world_reset(self, world_name: str = "cranavgym_drone_sim"):
+
+        # 1) Build your request
+        req = WorldControl()
+        req.reset.all = True
+
+        # 2) Call `request`, passing:
+        #    - topic
+        #    - your WorldControl request msg
+        #    - the WorldControl class as `request_type`
+        #    - the Boolean class     as `response_type`
+        #    - timeout in ms (e.g. 2000)
+        result, response = self.node.request(
+            f"/world/{world_name}/control", req, WorldControl, Boolean, 100000
+        )
+
+        # 3) Check success and handle the Boolean reply
+        if not result:
+            raise RuntimeError("[ERROR] World reset request timed out")
+        if not response.data:
+            raise RuntimeError("[ERROR] World reset failed on the server side")
+        print("[INFO] World reset successfully")
+
+    def world_reset2(self):
         self.move_model()
 
     def move_model(self):
