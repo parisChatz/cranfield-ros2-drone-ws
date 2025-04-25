@@ -15,13 +15,13 @@ from stable_baselines3 import PPO
 from drone_env.envs.flight_arena import DroneEnv
 
 HEADLESS_SIM = False
-MODEL_NAME = "x500_mono_cam"
+MODEL_NAME = "x500_gimbal"
 
 
 def wait_for_clock(min_msgs=10, timeout=30.0):
     cmd = [
         sys.executable,
-        "drone_env/envs/utils/wait_for_clock.py",
+        "drone_env/envs/utils/wait_for_clock_helper.py",
         "--min-msgs",
         str(min_msgs),
         "--timeout",
@@ -98,16 +98,18 @@ def kill_process_tree(pid, sig=signal.SIGTERM, timeout=5.0):
 def main():
     sim_proc = None
     exit_code = 0
+    episode_max_steps = 2560
+
     try:
         # 1) start the sim as its own process
         sim_proc = launch_ros2_sim(HEADLESS_SIM, MODEL_NAME)
         # 2) wait for /clock
         wait_for_clock(min_msgs=10, timeout=30.0)
-        print("[INFO] Simulation is ready - starting RL training")
+        print("[INFO] Simulation is ready - starting RL training" * 100)
 
         # # 3) train
-        env = DroneEnv(render_mode="human")
-        model = PPO("CnnPolicy", env, verbose=1, n_steps=500)
+        env = DroneEnv(render_mode="human", max_episode_steps=episode_max_steps)
+        model = PPO("CnnPolicy", env, verbose=1, n_steps=episode_max_steps)
         model.learn(total_timesteps=200046, progress_bar=True)
 
     except TimeoutError as exc:
@@ -119,6 +121,7 @@ def main():
     finally:
         if sim_proc:
             # cleanly kill ros2-launch + all its children (gz-sim, gui, etc.)
+            print("[INFO] Shutting down simulation" * 100)
             kill_process_tree(sim_proc.pid)
         sys.exit(exit_code)
 
