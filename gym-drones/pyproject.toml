@@ -1,0 +1,21 @@
+# Unfinished
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gym-drones"
+version = "0.0.0"
+description = "Gym RL environments and helpers for X500 drone agents in Gazebo Harmonic"
+requires-python = ">=3.12"
+dependencies = [
+    "protobuf>=4.21.12",
+    "gymnasium>=1.1.1",
+    "stable-baselines3>=2.6.0",
+    "psutil>=5.9.8",
+    "pyyaml>=6.0.1",
+    "tqdm>=4.67.1",
+    "rich>=13.7.1",
+    "opencv-python>=4.11.0",
+]
+

@@ -8,14 +8,54 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    # Paths
+    """
+    Launch file for spawning a drone in a Gazebo simulation environment using ROS 2 and ROS-GZ.
+
+    This launch file allows users to spawn a specified drone model into a given Gazebo world,
+    with optional headless mode and custom spawn coordinates. It supports launching Gazebo
+    with or without GUI, spawning the drone via `ros_gz_sim`, and optionally running a
+    ROS-GZ bridge for topic communication.
+
+    Launch Arguments:
+        headless_gazebo (bool):
+            Whether to launch Gazebo in headless (no GUI) mode. Default is "false".
+
+        world (str):
+            Absolute path to the Gazebo world file. Default is the drone_scenario2.sdf
+            file within the `my_drone_sim` package.
+
+        model (str):
+            Absolute path to the drone model SDF file. Default is the x500_gimbal model
+            from the `my_drone_sim` package.
+
+        x (float):
+            X coordinate for the drone's initial spawn position. Default is "0".
+
+        y (float):
+            Y coordinate for the drone's initial spawn position. Default is "0".
+
+        z (float):
+            Z coordinate for the drone's initial spawn position. Default is "0.1".
+
+    Usage:
+        ros2 launch my_drone_sim my_world.launch.py [arguments]
+
+    Examples:
+        ros2 launch my_drone_sim my_world.launch.py headless_gazebo:=true x:=2.0 y:=1.0 z:=1.5
+
+    Note:
+        The ROS-GZ bridge section is included in the file but commented out cause it slows down
+        the simulation. Uncomment it to enable parameter bridging with the specified YAML config.
+    """
+
+    # Package paths
     pkg_share = get_package_share_directory("my_drone_sim")
-    world_file = os.path.join(pkg_share, "worlds", "drone_scenario.sdf")
+    world_file = os.path.join(pkg_share, "worlds", "drone_scenario2.sdf")
     model_file = os.path.join(pkg_share, "models", "x500_gimbal", "model.sdf")
     bridge_config_file = os.path.join(pkg_share, "config", "bridge_topics.yaml")
 
     # Gazebo Sim command
-    gazebo_cmd = ExecuteProcess(cmd=["gz", "sim", "-r", world_file], output="screen")
+    gazebo_cmd = ExecuteProcess(cmd=["gz", "sim", world_file], output="screen")
 
     # Spawn drone after a short delay
     spawn_drone_cmd = Node(

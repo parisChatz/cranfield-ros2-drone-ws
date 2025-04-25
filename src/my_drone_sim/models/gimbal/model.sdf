@@ -265,7 +265,6 @@
           <horizontal_fov>2.0</horizontal_fov>
           <image>
             <format>R8G8B8</format>
-            <format>R8G8B8</format>
             <width>1280</width>
             <height>720</height>
           </image>
@@ -287,18 +286,17 @@
           <horizontal_fov>2.0</horizontal_fov>
           <image>
             <format>R8G8B8</format>
-            <format>R8G8B8</format>
-            <width>1280</width>
-            <height>720</height>
+            <width>60</width>
+            <height>60</height>
           </image>
           <clip>
-            <near>0.05</near>
-            <far>15000</far>
+            <near>0.01</near>
+            <far>10</far>
           </clip>
         </camera>
         <always_on>1</always_on>
         <update_rate>30</update_rate>
-        <visualize>true</visualize>
+        <visualize>false</visualize>
         <topic>x500/gimbal_segmentation_camera</topic>
       </sensor>
     </link>

@@ -2,7 +2,20 @@
 This is a repo for working on RL in GazeboSim and ROS2 with PX4 drones. The models have been taken from the official PX4 repo.
 
 ## Installation
+### Virtual Environment
+After properly installing ros2 jazzy and gz sim harmonic you have to create a venv that includes all the necessary python dependencies (ros2, gz sim, etc...) by doing:
+```
+python3 -m venv .venv --system-site-packages
+```
+Then just source your .venv and install the requirements by doing:
+```
+python3 -m pip install -r cranfield-ros2-drone-ws/gym-drones/requirements.txt
+```
+
+### Project installation
 Clone and do ```colcon build``` and ```source install.setup.bash```.
+
+Don't forget to ```export GZ_SIM_RESOURCE_PATH=$HOME/cranfield-ros2-drone-ws/src/my_drone_sim/models:$HOME/cranfield-ros2-drone-ws/src/my_drone_sim/worlds:$GZ```
 
 ## Usage
 To begin an empty world drone simulation run ```ros2 launch my_drone_sim my_world.launch.py```.

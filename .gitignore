@@ -2,3 +2,6 @@
 /install
 /build
 /.vscode
+.venv
+__pycache__
+drone_controller_pkg

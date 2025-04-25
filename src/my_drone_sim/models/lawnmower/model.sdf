@@ -4,8 +4,6 @@
     <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label">
       <label>1</label>
     </plugin>
-    <pose>0 0 0.246 0 0 0</pose>
-    <!-- pose>0 0 0.6 0 0 0</pose -->
     <link name="base_link">
       <pose>0 0 0 0 0 0</pose>
       <inertial>

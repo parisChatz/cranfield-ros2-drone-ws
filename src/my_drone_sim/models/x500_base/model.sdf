@@ -312,12 +312,12 @@
             <uri>model://x500_base/meshes/1345_prop_ccw.stl</uri>
           </mesh>
         </geometry>
-        <material>
-          <script>
-            <name>Gazebo/DarkGrey</name>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-          </script>
-        </material>
+          <material>
+            <ambient>0.3 0.3 0.3 1</ambient>
+            <diffuse>0.3 0.3 0.3 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
       </visual>
       <visual name="rotor_0_visual_motor_bell">
         <pose>0 0 -.032 0 0 0</pose>
@@ -384,12 +384,12 @@
             <uri>model://x500_base/meshes/1345_prop_ccw.stl</uri>
           </mesh>
         </geometry>
-        <material>
-          <script>
-            <name>Gazebo/DarkGrey</name>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-          </script>
-        </material>
+          <material>
+            <ambient>0.3 0.3 0.3 1</ambient>
+            <diffuse>0.3 0.3 0.3 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
       </visual>
       <visual name="rotor_1_visual_motor_top">
         <pose>0 0 -.032 0 0 0</pose>
@@ -456,12 +456,12 @@
             <uri>model://x500_base/meshes/1345_prop_cw.stl</uri>
           </mesh>
         </geometry>
-        <material>
-          <script>
-            <name>Gazebo/DarkGrey</name>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-          </script>
-        </material>
+          <material>
+            <ambient>0.3 0.3 0.3 1</ambient>
+            <diffuse>0.3 0.3 0.3 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
       </visual>
       <visual name="rotor_2_visual_motor_top">
         <pose>0 0 -.032 0 0 0</pose>
@@ -528,12 +528,12 @@
             <uri>model://x500_base/meshes/1345_prop_cw.stl</uri>
           </mesh>
         </geometry>
-        <material>
-          <script>
-            <name>Gazebo/DarkGrey</name>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-          </script>
-        </material>
+          <material>
+            <ambient>0.3 0.3 0.3 1</ambient>
+            <diffuse>0.3 0.3 0.3 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
       </visual>
       <visual name="rotor_3_visual_motor_top">
         <pose>0 0 -.032 0 0 0</pose>

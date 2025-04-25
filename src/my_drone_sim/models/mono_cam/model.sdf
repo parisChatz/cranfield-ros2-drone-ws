@@ -50,10 +50,11 @@
       <sensor name="imager" type="camera">
         <pose>0 0 0 0 0 0</pose>
         <camera>
+          <!-- <visibility_mask>0x0fffffff</visibility_mask> -->
           <horizontal_fov>1.74</horizontal_fov>
           <image>
-            <width>1280</width>
-            <height>960</height>
+            <width>160</width>
+            <height>160</height>
           </image>
           <clip>
             <near>0.1</near>
@@ -65,6 +66,19 @@
         <visualize>true</visualize>
         <topic>x500/camera</topic>
       </sensor>
+      <sensor name="logical_camera" type="logical_camera">
+        <always_on>1</always_on>
+        <update_rate>30.0</update_rate>
+        <logical_camera>
+          <near>0.1</near>
+          <far>20.0</far>
+          <horizontal_fov>1.047</horizontal_fov>
+          <aspect_ratio>1.333</aspect_ratio>
+        </logical_camera>
+        <!-- this will publish gz.msgs.LogicalCameraImage on /mono_cam/logical_camera -->
+        <topic>x500/camera/logical_camera</topic>
+      </sensor>
+
       <gravity>true</gravity>
       <velocity_decay/>
     </link>
