@@ -10,24 +10,9 @@ import sys
 import signal
 import os
 
-
 from stable_baselines3 import PPO
-from drone_env.envs.flight_arena import DroneEnv
-
-HEADLESS_SIM = False
-MODEL_NAME = "x500_gimbal"
-
-
-def wait_for_clock(min_msgs=10, timeout=30.0):
-    cmd = [
-        sys.executable,
-        "drone_env/envs/utils/wait_for_clock_helper.py",
-        "--min-msgs",
-        str(min_msgs),
-        "--timeout",
-        str(timeout),
-    ]
-    subprocess.run(cmd, check=True)
+from drone_env.envs.flight_arena_v1 import DroneEnv
+from drone_env.envs.utils.wait_for_clock_helper import wait_for_clock, ClockTimeoutError
 
 
 def launch_ros2_sim(headless_sim: bool = True, model_name: str = "x500_mono_cam"):
@@ -95,21 +80,25 @@ def kill_process_tree(pid, sig=signal.SIGTERM, timeout=5.0):
 # --------------------------------------------------------------------------- #
 #  Main Loop
 # --------------------------------------------------------------------------- #
+HEADLESS_SIM = False
+MODEL_NAME = "x500_mono_cam"
+
+
 def main():
     sim_proc = None
     exit_code = 0
-    episode_max_steps = 2560
+    episode_max_steps = 2000
 
     try:
         # 1) start the sim as its own process
         sim_proc = launch_ros2_sim(HEADLESS_SIM, MODEL_NAME)
         # 2) wait for /clock
-        wait_for_clock(min_msgs=10, timeout=30.0)
+        n = wait_for_clock(min_msgs=20, timeout=5.0)
         print("[INFO] Simulation is ready - starting RL training" * 100)
 
         # # 3) train
         env = DroneEnv(render_mode="human", max_episode_steps=episode_max_steps)
-        model = PPO("CnnPolicy", env, verbose=1, n_steps=episode_max_steps)
+        model = PPO("CnnPolicy", env, verbose=0)
         model.learn(total_timesteps=200046, progress_bar=True)
 
     except TimeoutError as exc:
@@ -118,6 +107,10 @@ def main():
     except RuntimeError as exc:
         print(f"[ERROR] {exc}")
         exit_code = 2
+    except ClockTimeoutError as e:
+        print("Clock never started:", e)
+    except Exception as e:
+        print(f"[ERROR] Caught in main: {e}", file=sys.stderr)
     finally:
         if sim_proc:
             # cleanly kill ros2-launch + all its children (gz-sim, gui, etc.)
