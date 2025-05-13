@@ -2,8 +2,10 @@
 <sdf version='1.10'>
   <world name='cranavgym_drone_sim'>
     <physics type='ode'>
+    <!-- Shouldnt go above 0.005 -->
       <max_step_size>0.005</max_step_size>
-      <real_time_factor>0</real_time_factor>
+      <real_time_update_rate>1</real_time_update_rate>
+      <real_time_factor>1</real_time_factor>
     </physics>
     <plugin name='gz::sim::systems::Physics' filename='gz-sim-physics-system'/>
     <plugin name='gz::sim::systems::SceneBroadcaster' filename='gz-sim-scene-broadcaster-system'/>
@@ -11,6 +13,11 @@
     <plugin name='gz::sim::systems::Sensors' filename='gz-sim-sensors-system'>
       <render_engine>ogre2</render_engine>
     </plugin>
+
+    <plugin name="gz::sim::systems::Contact" filename="gz-sim-contact-system" >
+    </plugin>
+
+    <start_paused>true</start_paused>
     <gravity>0 0 -9.8000000000000007</gravity>
     <model name='ground_plane'>
       <static>true</static>
@@ -19,7 +26,7 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>100 100</size>
+              <size>50 50</size>
             </plane>
           </geometry>
           <surface>
@@ -34,7 +41,7 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>100 100</size>
+              <size>50 50</size>
             </plane>
           </geometry>
           <material>
