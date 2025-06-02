@@ -5,3 +5,4 @@
 .venv
 __pycache__
 drone_controller_pkg
+models
