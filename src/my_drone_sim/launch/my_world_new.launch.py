@@ -69,12 +69,12 @@ def generate_launch_description():
     )
 
     gz_headless = ExecuteProcess(
-        cmd=["gz", "sim", "-v", "4", "-s", "-r", "--headless-rendering", world_file],
+        cmd=["gz", "sim", "-v", "2", "-s", "-r", "--headless-rendering", world_file],
         output="screen",
         condition=IfCondition(headless),
     )
     gz_gui = ExecuteProcess(
-        cmd=["gz", "sim", "-v", "4", "-r", world_file],
+        cmd=["gz", "sim", "-v", "2", "-r", world_file],
         output="screen",
         condition=UnlessCondition(headless),
     )
