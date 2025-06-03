@@ -84,10 +84,6 @@
       <dimensions>3</dimensions>
     </plugin>
 
-    <plugin name="gz::sim::systems::Contact" filename="gz-sim-contact-system" >
-      
-    </plugin>
-
     <!-- Velocity controller plugin -->
     <plugin filename="gz-sim-multicopter-control-system" name="gz::sim::systems::MulticopterVelocityControl">
       <robotNamespace>x500</robotNamespace>
