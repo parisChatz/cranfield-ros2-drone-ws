@@ -135,16 +135,15 @@ def main():
 
     try:
         # 1) start the sim as its own process
-
         # Choose one of the two methods to launch the simulation:
-        # 1) launch gz-sim directly
+        # a) launch gz-sim directly
         sim_proc = launch_gz_sim(
             port=11345,
             world_sdf="/home/paris/cranfield-ros2-drone-ws/src/my_drone_sim/worlds/simple_map.sdf",
             headless=HEADLESS_SIM,
             capture_output=True,
         )
-        # 2) launch ros2 launchfiles which include the gz-sim node, the spawn drone node, and the ros2-gz bridge
+        # b) launch ros2 launchfiles which include the gz-sim node, the spawn drone node, and the ros2-gz bridge
         # sim_proc = launch_ros2_sim(HEADLESS_SIM, MODEL_NAME)
 
         # 2) wait for /clock
