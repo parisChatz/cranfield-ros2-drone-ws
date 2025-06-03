@@ -13,7 +13,7 @@ import math
 
 
 def world_control(
-    node: Node, action: str, world_name: str, step_size: int = 5000, timeout: int = 1000
+    node: Node, action: str, world_name: str, step_size: int = 100, timeout: int = 1000
 ):
     """
     Control Gazebo Harmonic world:
@@ -26,16 +26,13 @@ def world_control(
     req = WorldControl()
     if action == "reset":
         req.reset.all = True
+        req.pause = True
     elif action == "pause":
         req.pause = True
     elif action == "unpause":
         req.pause = False
     elif action == "step":
         req.multi_step = step_size
-        svc = f"/world/{world_name}/control"
-        ok, resp = node.request(svc, req, WorldControl, Boolean, timeout)
-        return ok, resp
-
     else:
         raise ValueError(f"Unknown world control action: {action}")
 
@@ -44,6 +41,7 @@ def world_control(
 
     # TODO this is not a good way to wait for the service to be ready
     print(f"[DBG] Service {svc}  with {action!r} returned ok={ok}, resp={resp}")
+    return ok, resp
 
 
 class Agent:
@@ -131,7 +129,6 @@ class GzInterface:
 
         # If you want to block until the world is reset, comment the above and
         # uncomment the following lines:
-
         # req = WorldControl()
         # req.reset.all = True
         # svc = f"/world/{self.world_name}/control"
@@ -152,11 +149,18 @@ class GzInterface:
         ).start()
 
     def step_world(self):
-        threading.Thread(
-            target=world_control,
-            args=(self.gz_node, "step", self.world_name),
-            daemon=True,
-        ).start()
+        # threading.Thread(
+        #     target=world_control,
+        #     args=(self.gz_node, "step", self.world_name),
+        #     daemon=True,
+        # ).start()
+        req = WorldControl()
+        req.multi_step = 100  # run 10 physics iterations
+        req.pause = True  # pause after the step
+        svc = f"/world/{self.world_name}/control"
+        ok, resp = self.gz_node.request(svc, req, WorldControl, Boolean, 500)
+        print(f"[DBG] Service MULTI STEP returned ok={ok}, resp={resp}")
+        print(" ")
 
 
 class DroneEnv(gym.Env):
@@ -176,13 +180,13 @@ class DroneEnv(gym.Env):
         )
         self.action_space = gym.spaces.Box(-1.0, 1.0, shape=(4,), dtype=np.float32)
 
-        self.goal_position = np.array([10.0, 0.0, 0.5], dtype=np.float32)
-        self.goal_radius = 1
+        self.goal_position = np.array([8.0, 0.0, 0.5], dtype=np.float32)
+        self.goal_radius = 2
 
     def reset(self, **kwargs):
         self.step_count = 0
         self.gz.reset_world()
-        self.agent.wait_for_next_image()
+        # self.agent.wait_for_next_image()
         obs = self.agent.get_observation()
         return obs, {}
 
@@ -200,22 +204,29 @@ class DroneEnv(gym.Env):
 
         dist = np.linalg.norm(pos - self.goal_position)
         goal_reached = dist < self.goal_radius
-        reward = 1.0 if goal_reached else 0.0
-        reward = reward + 0.01 if pos[2] > 0.6 else -0.01
 
         # Count as "Collided" if orientation is too steep, i.e., if the drone is pitched or rolled bewond saving.
-        # print(f"orientation={orientation}")
         collision = True if self.too_steep(orientation) else False
+
+        # Count as "Collided" if the drone is outside the arena.
+        collision = True if pos[0] < -10 or pos[0] > 10 else collision
+        collision = True if pos[1] < -10 or pos[1] > 10 else collision
+
+        reward = 1.0 if goal_reached else 0.0
+        reward = reward + 0.01 if pos[2] > 0.6 and pos[2] < 1 else reward - 0.01
+        reward = reward - 1.0 if collision else reward
 
         terminated = True if (goal_reached or collision) else False
 
         truncated = self.step_count >= self.max_episode_steps
         info = {}
 
-        # print(
-        #     f"terminated={terminated}, truncated={truncated}, "
-        #     f"step={self.step_count}, reward={reward}, distance={dist}, position={pos}, orientation={orientation}"
-        # )
+        # if terminated or truncated:
+        print(
+            f"terminated={terminated}, truncated={truncated}, goal_reached={goal_reached}, collision={collision}, "
+            f"step={self.step_count}, reward={reward}, distance={dist}, position={pos}, orientation={orientation}"
+        )
+
         return obs, reward, terminated, truncated, info
 
     def render(self):
