@@ -5,4 +5,27 @@
 .venv
 __pycache__
 drone_controller_pkg
-models
+
+# packages still in dev
+cranfield_drones_description
+cranfield_drones_bringup
+cranfield_drones_gazebo
+cranfield_drones_control
+cranfield_drones_simulation
+cranfield_drones_rl
+
+# models to ignore
+black_smoke
+Oak tree
+Pine Tree
+rescue_randy_sitting
+rubicon_snow_challenge
+waves
+waves2
+white_smoke
+harmonic_terrain
+harmonic_terrain_objects
+ksql_airport
+fortress_scene
+fortress_heightmap
+
