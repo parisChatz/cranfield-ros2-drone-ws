@@ -17,6 +17,9 @@ Clone and do ```colcon build``` and ```source install.setup.bash```.
 
 Don't forget to ```export GZ_SIM_RESOURCE_PATH=$HOME/cranfield-ros2-drone-ws/src/my_drone_sim/models:$HOME/cranfield-ros2-drone-ws/src/my_drone_sim/worlds:$GZ```
 
+## RL Training
+For RL training go into the gym-drones package and run the train_v2.py. This is a simple file to train PPO on the environment. The gymnasium environment that this train file is using is the flight_arena_v1.py. 
+
 ## Usage
 To begin an empty world drone simulation run ```ros2 launch my_drone_sim my_world.launch.py```.
 
