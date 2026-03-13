@@ -68,7 +68,7 @@ def launch_ros2_sim(headless_sim: bool = True, model_name: str = "x500_mono_cam"
     cmd = [
         ROS2,
         "launch",
-        "my_drone_sim",
+        "x500_simulator",
         "my_world_new.launch.py",
         f"headless:={'true' if headless_sim else 'false'}",
         f"model:={model_name}",
@@ -139,7 +139,7 @@ def main():
         # a) launch gz-sim directly
         sim_proc = launch_gz_sim(
             port=11345,
-            world_sdf="/home/paris/cranfield-ros2-drone-ws/src/my_drone_sim/worlds/simple_map.sdf",
+            world_sdf="/home/paris/cranfield-ros2-drone-ws/src/x500_simulator/worlds/simple_map.sdf",
             headless=HEADLESS_SIM,
             capture_output=True,
         )

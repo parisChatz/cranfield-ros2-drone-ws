@@ -2,7 +2,7 @@
 source ~/cranfield-ros2-drone-ws/install/setup.bash 
 
 # exports are included in the launch file.
-# export GZ_SIM_RESOURCE_PATH=$HOME/cranfield-ros2-drone-ws/src/my_drone_sim/models:$HOME/cranfield-ros2-drone-ws/src/my_drone_sim/worlds:$GZ
+# export GZ_SIM_RESOURCE_PATH=$HOME/cranfield-ros2-drone-ws/src/x500_simulator/models:$HOME/cranfield-ros2-drone-ws/src/x500_simulator/worlds:$GZ
 
 python3 train.py
 

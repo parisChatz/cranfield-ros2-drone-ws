@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sdf version="1.6">
+  <model name="flight_arena">
+    <static>true</static>
+    <link name="link">
+      <visual name="vis">
+        <geometry>
+          <mesh><uri>Flight_arena_3.dae</uri></mesh>
+        </geometry>
+      </visual>
+      <collision name="coll">
+        <geometry>
+          <mesh><uri>Flight_arena_3.dae</uri></mesh>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+</sdf>

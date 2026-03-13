@@ -24,7 +24,7 @@ def launch_ros2_sim(headless_sim: bool = True, model_name: str = "x500_mono_cam"
     cmd = [
         ROS2,
         "launch",
-        "my_drone_sim",
+        "x500_simulator",
         "my_world_new.launch.py",
         f"headless:={'true' if headless_sim else 'false'}",
         f"model:={model_name}",

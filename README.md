@@ -15,19 +15,19 @@ python3 -m pip install -r cranfield-ros2-drone-ws/gym-drones/requirements.txt
 ### Project installation
 Clone and do ```colcon build``` and ```source install.setup.bash```.
 
-Don't forget to ```export GZ_SIM_RESOURCE_PATH=$HOME/cranfield-ros2-drone-ws/src/my_drone_sim/models:$HOME/cranfield-ros2-drone-ws/src/my_drone_sim/worlds:$GZ```
+Don't forget to ```export GZ_SIM_RESOURCE_PATH=$HOME/cranfield-ros2-drone-ws/src/x500_simulator/models:$HOME/cranfield-ros2-drone-ws/src/x500_simulator/worlds:$GZ```
 
 ## RL Training
 For RL training go into the gym-drones package and run the train_v2.py. This is a simple file to train PPO on the environment. The gymnasium environment that this train file is using is the flight_arena_v1.py. 
 
 ## Usage
-To begin an empty world drone simulation run ```ros2 launch my_drone_sim my_world.launch.py```.
+To begin an empty world drone simulation run ```ros2 launch x500_simulator my_world.launch.py```.
 
 A simple command from ros2 is ```ros2 topic pub /x500/command/twist geometry_msgs/msg/Twist "{linear: {x: 1.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.5}}" --once```.
 
 If you want you can publish straight on the gazebo topic by doing ```gz topic -t "/x500/command/twist" -m gz.msgs.Twist -p "linear: { x: 0.0, y: 0.0, z: 0.0 }, angular: { x: 0.0, y: 0.0, z: 0.5 }"```.
 
-The bridge for the bidirectional relationship between ros2 and gzsim topics is run in the launch file, but if you comment it out you can run the bridge from the terminal by doing ```ros2 run ros_gz_bridge parameter_bridge --ros-args -p config_file:=src/my_drone_sim/config/bridge_topics.yaml```.
+The bridge for the bidirectional relationship between ros2 and gzsim topics is run in the launch file, but if you comment it out you can run the bridge from the terminal by doing ```ros2 run ros_gz_bridge parameter_bridge --ros-args -p config_file:=src/x500_simulator/config/bridge_topics.yaml```.
 
 To kill the drones motors do ```ros2 topic pub /x500/enabled_motors std_msgs/msg/Bool "{data: false}"```.
 

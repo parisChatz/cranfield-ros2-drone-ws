@@ -28,7 +28,7 @@ Gazebo doesn't show all the topics if nothing is subscribed to it. So its not a 
 ```
 (venv) paris@hal5000:~/cranfield-ros2-drone-ws/gym-drones$ ./train.sh 
 [INFO] Launching ROS 2 sim with command:
-bash -c 'source /opt/ros/jazzy/setup.bash && source ~/cranfield-ros2-drone-ws/install/setup.bash && ros2 launch my_drone_sim my_world.launch.py'
+bash -c 'source /opt/ros/jazzy/setup.bash && source ~/cranfield-ros2-drone-ws/install/setup.bash && ros2 launch x500_simulator my_world.launch.py'
 [INFO] Waiting for Gazebo topics: ['/x500/camera', '/x500/command/twist']
 [ERROR] ros2 launch failed to start.
 [STDOUT] [INFO] [launch]: All log files can be found below /home/paris/.ros/log/2025-04-16-11-52-51-631942-hal5000-31245
