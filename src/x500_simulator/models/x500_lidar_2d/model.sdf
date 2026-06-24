@@ -2,7 +2,7 @@
 <sdf version='1.9'>
   <model name='x500_lidar_2d'>
     <include merge='true'>
-      <uri>x500</uri>
+      <uri>model://x500</uri>
     </include>
     <include merge='true'>
       <uri>model://lidar_2d_v2</uri>
@@ -10,7 +10,7 @@
     </include>
     <joint name="LidarJoint" type="fixed">
       <parent>base_link</parent>
-      <child>lidar_2d_v2_link</child>
+      <child>lidar_2d_v2/base_link</child>
     </joint>
   </model>
 </sdf>

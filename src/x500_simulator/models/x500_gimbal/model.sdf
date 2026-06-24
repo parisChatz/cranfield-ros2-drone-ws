@@ -19,7 +19,7 @@
     </include>
     <joint name="LidarJoint" type="fixed">
       <parent>base_link</parent>
-      <child>lidar_2d_v2_link</child>
+      <child>lidar_2d_v2/base_link</child>
     </joint>
     
   </model>

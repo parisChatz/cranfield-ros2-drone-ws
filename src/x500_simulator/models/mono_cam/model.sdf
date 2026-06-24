@@ -63,7 +63,6 @@
         </camera>
         <always_on>1</always_on>
         <update_rate>5</update_rate>
-        <visualize>true</visualize>
         <topic>x500/camera</topic>
       </sensor>
     </link>
