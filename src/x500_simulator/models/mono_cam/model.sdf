@@ -62,7 +62,7 @@
           </clip>
         </camera>
         <always_on>1</always_on>
-        <update_rate>5</update_rate>
+        <update_rate>30</update_rate>
         <topic>x500/camera</topic>
       </sensor>
     </link>
