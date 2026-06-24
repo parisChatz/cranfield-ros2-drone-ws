@@ -15,6 +15,7 @@ find_package(ament_cmake REQUIRED)
 install(DIRECTORY models/ DESTINATION share/x500_simulator/models)
 install(DIRECTORY worlds/ DESTINATION share/x500_simulator/worlds)
 install(DIRECTORY launch/ DESTINATION share/x500_simulator/launch)
+install(DIRECTORY config/ DESTINATION share/x500_simulator/config)
 
 # Register environment hook for Gazebo resource discovery
 ament_environment_hooks(hooks/setup.dsv.in)
