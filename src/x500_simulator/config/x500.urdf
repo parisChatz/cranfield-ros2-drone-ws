@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<robot name="x500" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Single link matching the PosePublisher root TF frame.
+       No joints => robot_state_publisher publishes no TF,
+       avoiding conflicts with the Gazebo PosePublisher.
+
+       All visual origins are expressed relative to the x500/base_link frame,
+       which is what the PosePublisher bridges as TF frame "x500".
+
+       Rotor visuals are baked in at rest positions (no joint animation).
+       Positions = SDF rotor link pose + SDF visual local pose. -->
+  <link name="x500">
+
+    <!-- ── Body ─────────────────────────────────────────────────────── -->
+    <visual name="body">
+      <!-- SDF base_link_visual: pose 0 0 0.025 0 0 π -->
+      <origin xyz="0 0 0.3" rpy="0 0 3.141592654"/>
+      <geometry>
+        <mesh filename="package://x500_simulator/models/x500_base/meshes/NXP-HGD-CF.dae"/>
+      </geometry>
+    </visual>
+
+    <!-- ── Motor bases (on base_link in SDF) ────────────────────────── -->
+    <visual name="motor_base_0">
+      <origin xyz="0.174 0.174 0.307" rpy="0 0 -0.45"/>
+      <geometry>
+        <mesh filename="package://x500_simulator/models/x500_base/meshes/5010Base.dae"/>
+      </geometry>
+    </visual>
+    <visual name="motor_base_1">
+      <origin xyz="-0.174 0.174 0.307" rpy="0 0 -0.45"/>
+      <geometry>
+        <mesh filename="package://x500_simulator/models/x500_base/meshes/5010Base.dae"/>
+      </geometry>
+    </visual>
+    <visual name="motor_base_2">
+      <origin xyz="0.174 -0.174 0.307" rpy="0 0 -0.45"/>
+      <geometry>
+        <mesh filename="package://x500_simulator/models/x500_base/meshes/5010Base.dae"/>
+      </geometry>
+    </visual>
+    <visual name="motor_base_3">
+      <origin xyz="-0.174 -0.174 0.307" rpy="0 0 -0.45"/>
+      <geometry>
+        <mesh filename="package://x500_simulator/models/x500_base/meshes/5010Base.dae"/>
+      </geometry>
+    </visual>
+
+    <!-- ── Motor bells ───────────────────────────────────────────────
+         SDF: local pose (0, 0, -0.307) within each rotor link.
+         URDF xyz = rotor_link_pose + (0, 0, -0.307)
+           rotor_0 @ (0.174, -0.174, 0.06)  → bell @ (0.174, -0.174, 0.028)
+           rotor_1 @ (-0.174, 0.174, 0.06)  → bell @ (-0.174,  0.174, 0.028)
+           rotor_2 @ (0.174,  0.174, 0.06)  → bell @ (0.174,   0.174, 0.028)
+           rotor_3 @ (-0.174,-0.174, 0.06)  → bell @ (-0.174, -0.174, 0.028) -->
+    <visual name="motor_bell_0">
+      <origin xyz="0.174 -0.174 0.303" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://x500_simulator/models/x500_base/meshes/5010Bell.dae"/>
+      </geometry>
+    </visual>
+    <visual name="motor_bell_1">
+      <origin xyz="-0.174 0.174 0.303" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://x500_simulator/models/x500_base/meshes/5010Bell.dae"/>
+      </geometry>
+    </visual>
+    <visual name="motor_bell_2">
+      <origin xyz="0.174 0.174 0.303" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://x500_simulator/models/x500_base/meshes/5010Bell.dae"/>
+      </geometry>
+    </visual>
+    <visual name="motor_bell_3">
+      <origin xyz="-0.174 -0.174 0.303" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://x500_simulator/models/x500_base/meshes/5010Bell.dae"/>
+      </geometry>
+    </visual>
+
+    <!-- ── Propeller blades ──────────────────────────────────────────
+         SDF: local visual pose (-0.022, -0.146, -0.016), scale 0.846.
+         URDF xyz = rotor_link_pose + (-0.022, -0.146, -0.016)
+           rotor_0 CCW @ (0.174,-0.174, 0.06) → (0.152, -0.320, 0.044)
+           rotor_1 CCW @ (-0.174, 0.174, 0.06) → (-0.196, 0.028, 0.044)
+           rotor_2 CW  @ (0.174,  0.174, 0.06) → (0.152,  0.028, 0.044)
+           rotor_3 CW  @ (-0.174,-0.174, 0.06) → (-0.196,-0.320, 0.044) -->
+    <visual name="prop_0_ccw">
+      <origin xyz="0.152 -0.320 0.319" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://x500_simulator/models/x500_base/meshes/1345_prop_ccw.stl"
+              scale="0.846 0.846 0.846"/>
+      </geometry>
+      <material name="prop_grey">
+        <color rgba="0.3 0.3 0.3 1"/>
+      </material>
+    </visual>
+    <visual name="prop_1_ccw">
+      <origin xyz="-0.196 0.028 0.319" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://x500_simulator/models/x500_base/meshes/1345_prop_ccw.stl"
+              scale="0.846 0.846 0.846"/>
+      </geometry>
+      <material name="prop_grey">
+        <color rgba="0.3 0.3 0.3 1"/>
+      </material>
+    </visual>
+    <visual name="prop_2_cw">
+      <origin xyz="0.152 0.028 0.319" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://x500_simulator/models/x500_base/meshes/1345_prop_cw.stl"
+              scale="0.846 0.846 0.846"/>
+      </geometry>
+      <material name="prop_grey">
+        <color rgba="0.3 0.3 0.3 1"/>
+      </material>
+    </visual>
+    <visual name="prop_3_cw">
+      <origin xyz="-0.196 -0.320 0.319" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://x500_simulator/models/x500_base/meshes/1345_prop_cw.stl"
+              scale="0.846 0.846 0.846"/>
+      </geometry>
+      <material name="prop_grey">
+        <color rgba="0.3 0.3 0.3 1"/>
+      </material>
+    </visual>
+
+  </link>
+
+</robot>
