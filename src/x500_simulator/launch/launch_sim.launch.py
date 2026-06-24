@@ -24,7 +24,7 @@ def generate_launch_description():
 
     visualize_arg = DeclareLaunchArgument(
         "visualize",
-        default_value="true",
+        default_value="false",
         description="If true, launch ros_gz_bridge and rviz2 for visualization",
     )
     visualize = LaunchConfiguration("visualize")
@@ -42,11 +42,6 @@ def generate_launch_description():
         value=os.path.join(pkg_share, "models")
         + ":"
         + os.environ.get("GZ_SIM_RESOURCE_PATH", ""),
-    )
-
-    # Only unset DISPLAY when running headless
-    unset_display = SetEnvironmentVariable(
-        name="DISPLAY", value="", condition=IfCondition(headless)
     )
 
     gz_headless = ExecuteProcess(
@@ -110,7 +105,6 @@ def generate_launch_description():
             headless_arg,
             visualize_arg,
             gz_resource_path,
-            unset_display,
             gz_headless,
             gz_gui,
             ros_gz_bridge,
