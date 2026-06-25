@@ -29,7 +29,14 @@ def generate_launch_description():
     )
     visualize = LaunchConfiguration("visualize")
 
-    world_file = os.path.join(pkg_share, "worlds", "warehouse_world.sdf")
+    map_name_arg = DeclareLaunchArgument(
+        "map_name",
+        default_value="simple_map.sdf",
+        description="Name of the world map file inside x500_simulator/worlds",
+    )
+    map_name = LaunchConfiguration("map_name")
+
+    world_file = PathJoinSubstitution([pkg_share, "worlds", map_name])
 
     gz_headless = ExecuteProcess(
         cmd=["gz", "sim", "-v", "2", "-s", "-r", "--headless-rendering", world_file],
@@ -91,6 +98,7 @@ def generate_launch_description():
         [
             headless_arg,
             visualize_arg,
+            map_name_arg,
             gz_headless,
             gz_gui,
             ros_gz_bridge,
