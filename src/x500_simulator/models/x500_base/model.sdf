@@ -215,9 +215,11 @@
           </friction>
         </surface>
       </collision>
+      <!-- Sensors -->
       <sensor name="air_pressure_sensor" type="air_pressure">
         <always_on>1</always_on>
         <update_rate>50</update_rate>
+        <topic>x500/air_pressure</topic>
         <air_pressure>
           <pressure>
             <noise type="gaussian">
@@ -289,6 +291,7 @@
       <sensor name="navsat_sensor" type="navsat">
         <always_on>1</always_on>
         <update_rate>30</update_rate>
+        <topic>x500/navsat</topic>
       </sensor>
     </link>
 

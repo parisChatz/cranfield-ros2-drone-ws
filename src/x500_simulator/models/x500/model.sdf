@@ -78,14 +78,6 @@
       <motorType>velocity</motorType>
     </plugin>
 
-    <!-- Odometry plugin -->
-    <plugin filename="gz-sim-odometry-publisher-system" name="gz::sim::systems::OdometryPublisher">
-      <odom_topic>x500/odometry</odom_topic>
-      <odom_frame>x500/odom</odom_frame>
-      <robot_base_frame>x500</robot_base_frame>
-      <dimensions>3</dimensions>
-    </plugin>
-
     <!-- Velocity controller plugin -->
     <plugin filename="gz-sim-multicopter-control-system" name="gz::sim::systems::MulticopterVelocityControl">
       <robotNamespace>x500</robotNamespace>
@@ -136,6 +128,24 @@
       <update_frequency>10</update_frequency>
       <static_publisher>false</static_publisher>
     </plugin>
+
+    <!-- Odometry plugin -->
+    <plugin filename="gz-sim-odometry-publisher-system" name="gz::sim::systems::OdometryPublisher">
+      <odom_topic>x500/odometry</odom_topic>
+      <odom_frame>x500/odom</odom_frame>
+      <robot_base_frame>x500</robot_base_frame>
+      <dimensions>3</dimensions>
+    </plugin>
+
+    <!-- IMU plugin -->
+    <plugin filename="gz-sim-imu-system"
+        name="gz::sim::systems::Imu">
+    </plugin>
+
+    <!-- Air pressure plugin -->
+    <!-- <plugin filename="gz-sim-air-pressure-system"
+        name="gz::sim::systems::AirPressure">
+    </plugin> -->
 
   </model>
 </sdf>
