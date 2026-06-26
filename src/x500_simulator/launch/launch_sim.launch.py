@@ -44,7 +44,7 @@ def generate_launch_description():
         condition=IfCondition(headless),
     )
     gz_gui = ExecuteProcess(
-        cmd=["gz", "sim", "-v", "1", "-r", world_file],
+        cmd=["gz", "sim", "-v", "1", world_file],
         output="screen",
         condition=UnlessCondition(headless),
     )
